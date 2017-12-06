@@ -2,18 +2,20 @@ package org.ironworkschurch.analytics.dao
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import com.google.gson.Gson
 import org.ironworkschurch.analytics.to.Login
 import org.ironworkschurch.analytics.to.LoginPayload
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
-class SimpleChurchDaoImpl : SimpleChurchDao() {
+class SimpleChurchDaoImpl @Inject constructor (override val gson: Gson) : SimpleChurchDao() {
   private val sessionId: String by lazy {
     login().session_id
   }
 
   fun login(): Login {
-    return objectMapper.readValue(getLoginPayload(), LoginPayload::class.java).data
+    return gson.fromJson(getLoginPayload(), LoginPayload::class.java).data
   }
 
   fun getLoginPayload(): String {

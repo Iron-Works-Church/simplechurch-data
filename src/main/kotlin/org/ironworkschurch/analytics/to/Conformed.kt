@@ -27,9 +27,7 @@ data class FlatGivingTransaction  (
 
 
 data class GivingAggregate  (
-  val id: Int,
   val uid: Int,
-  val amount: Double,
   val date: String,
   val previous7DayTotal: Double,
   val previous30DayTotal: Double,

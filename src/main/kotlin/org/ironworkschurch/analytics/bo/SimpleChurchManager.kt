@@ -2,11 +2,11 @@ package org.ironworkschurch.analytics.bo
 
 import mu.KLogging
 import org.ironworkschurch.analytics.dao.SimpleChurchDao
-import org.ironworkschurch.analytics.dao.SimpleChurchDaoImpl
 import org.ironworkschurch.analytics.to.*
+import javax.inject.Inject
 
 
-class SimpleChurchManager (private val simpleChurchDao : SimpleChurchDao = SimpleChurchDaoImpl()) {
+class SimpleChurchManager @Inject constructor (private val simpleChurchDao : SimpleChurchDao) {
   companion object : KLogging()
 
   fun getGivingByHousehold(): List<GivingTransaction> {

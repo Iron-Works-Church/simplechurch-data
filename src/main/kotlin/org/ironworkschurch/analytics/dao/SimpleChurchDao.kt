@@ -7,10 +7,7 @@ import org.ironworkschurch.analytics.to.*
 
 abstract class SimpleChurchDao {
   companion object: KLogging()
-  val gson =  Gson()
-  val objectMapper = object : ObjectMapper() {
-    override fun <T : Any?> readValue(content: String?, valueType: Class<T>?) = gson.fromJson(content, valueType)
-  }
+  abstract val gson: Gson
 
   fun getAllPeople(): List<PeoplePerson> {
     return parsePeople(getAllPeoplePayload())
@@ -33,14 +30,14 @@ abstract class SimpleChurchDao {
 
   abstract fun getGivingPayload(id: Int): String
 
-  fun parsePeople(payload: String) = objectMapper.readValue(payload, PeopleByInitial::class.java)
+  fun parsePeople(payload: String) = gson.fromJson(payload, PeopleByInitial::class.java)
     .data
     .values
     .flatten()
 
-  fun parsePerson(payload: String) = objectMapper.readValue(payload, PersonPayload::class.java)
+  fun parsePerson(payload: String) = gson.fromJson(payload, PersonPayload::class.java)
     .data
 
-  fun parseIndividualGiving(payload: String) = objectMapper.readValue(payload, PersonGiving::class.java)
+  fun parseIndividualGiving(payload: String) = gson.fromJson(payload, PersonGiving::class.java)
     .data
 }

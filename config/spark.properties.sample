@@ -1,0 +1,4 @@
+es.index.auto.create=true
+es.nodes=
+es.port=
+es.nodes.wan.only=true

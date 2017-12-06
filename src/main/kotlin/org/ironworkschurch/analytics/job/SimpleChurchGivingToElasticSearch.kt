@@ -1,27 +1,33 @@
 package org.ironworkschurch.analytics.job
 
+import com.google.common.io.Resources
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.google.inject.Guice
 import org.apache.spark.SparkConf
 import org.apache.spark.api.java.JavaSparkContext
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark
 import org.ironworkschurch.analytics.bo.SimpleChurchManager
+import org.ironworkschurch.analytics.config.EtlModule
 import org.ironworkschurch.analytics.to.FlatGivingTransaction
-import org.ironworkschurch.analytics.to.GivingTransaction
 import java.io.File
+import java.util.*
 
 
-class SimpleChurchGivingToElasticSearch (val simpleChurchManager: SimpleChurchManager) {
+class SimpleChurchGivingToElasticSearch (private val simpleChurchManager: SimpleChurchManager) {
   fun simpleChurchGivingToElasticSearch() {
     val givingByHousehold = simpleChurchManager.getGivingByHousehold()
     //val givingByHousehold: List<GivingTransaction> = Gson().fromJson(File("transactions.json").reader(), object: TypeToken<List<GivingTransaction>>() {}.type)
 
+    val properties = File("config/spark.properties").reader().use {
+      Properties().apply { load(it) }
+    }
 
     val sparkConf = SparkConf().apply {
-      set("es.index.auto.create", "true")
-      set("es.nodes", "10.8.0.10")
-      set("es.port", "9200")
-      set("es.nodes.wan.only", "true")
+      set("es.index.auto.create", properties.getProperty("es.index.auto.create"))
+      set("es.nodes", properties.getProperty("es.nodes"))
+      set("es.port", properties.getProperty("es.port"))
+      set("es.nodes.wan.only", properties.getProperty("es.nodes.wan.only"))
     }
 
     val sc = JavaSparkContext("local", "iwc", sparkConf)
@@ -58,7 +64,9 @@ class SimpleChurchGivingToElasticSearch (val simpleChurchManager: SimpleChurchMa
   companion object {
     @JvmStatic
     fun main(args: Array<String>) {
-      SimpleChurchGivingToElasticSearch(SimpleChurchManager()).simpleChurchGivingToElasticSearch()
+      Guice.createInjector(EtlModule())
+        .getInstance(SimpleChurchGivingToElasticSearch::class.java)
+        .simpleChurchGivingToElasticSearch()
     }
   }
 }
