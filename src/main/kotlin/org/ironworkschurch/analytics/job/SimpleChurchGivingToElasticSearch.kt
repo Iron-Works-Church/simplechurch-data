@@ -49,11 +49,10 @@ class SimpleChurchGivingToElasticSearch (val simpleChurchManager: SimpleChurchMa
       )
     }
 
-    //JavaEsSpark.saveToEs(sc.parallelize(flatTransactions), "iwc-giving/transactions")
+    JavaEsSpark.saveToEs(sc.parallelize(flatTransactions), "iwc-giving/transactions")
     val aggregates = org.ironworkschurch.analytics.bo.Aggregator().aggregate(flatTransactions)
 
     JavaEsSpark.saveToEs(sc.parallelize(aggregates), "iwc-giving-aggregates/aggregates")
-
   }
 
   companion object {

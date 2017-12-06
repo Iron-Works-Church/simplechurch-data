@@ -9,7 +9,7 @@ data class PeopleByInitial(
   val statusCode: String,
   val data: Map<String, List<PeoplePerson>>)
 
-data class PeoplePerson(
+data class PeoplePerson (
   val joinDate: String,
   val inactiveDate: String,
   val uid: Int,
