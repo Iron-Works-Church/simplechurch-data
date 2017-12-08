@@ -1,6 +1,5 @@
-create table if not exists GROUP_DELTA
+create table if not exists GROUP_BASE
 (
-  did int AUTO_INCREMENT PRIMARY KEY,
 	gid int not null,
 	active bit not null,
 	address text null,
@@ -22,11 +21,7 @@ create table if not exists GROUP_DELTA
 	state text null,
 	visibleMembership bit not null,
 	zipcode text null,
-	ROW_EFF_DTS datetime default CURRENT_TIMESTAMP not null,
-	ROW_EXP_DTS datetime null,
-	CURR_ROW_FL varchar(1) default 'Y' not null,
-	LAST_UPDATE_DTS datetime default CURRENT_TIMESTAMP not null,
-  UNIQUE KEY bus_key (gid, ROW_EFF_DTS)
+  UNIQUE KEY bus_key (gid)
 )
 ;
 

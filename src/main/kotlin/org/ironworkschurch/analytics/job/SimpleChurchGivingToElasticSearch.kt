@@ -11,6 +11,8 @@ import org.ironworkschurch.analytics.bo.SimpleChurchManager
 import org.ironworkschurch.analytics.config.EtlModule
 import org.ironworkschurch.analytics.to.FlatGivingTransaction
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -36,7 +38,7 @@ class SimpleChurchGivingToElasticSearch (private val simpleChurchManager: Simple
         id = it.id,
         uid = it.uid,
         amount = it.amount.replace("$", "").replace(",", "").toDouble(),
-        date = it.date,
+        date = LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE),
         time = it.time,
         method = it.method,
         transactionId = it.transactionId,
@@ -50,8 +52,7 @@ class SimpleChurchGivingToElasticSearch (private val simpleChurchManager: Simple
         oldNote = it.oldNote,
         sfoSynced = it.sfoSynced,
         qboSynced = it.qboSynced,
-        categoryId = it.category.id,
-        categoryName = it.category.name
+        categoryId = it.category.id
       )
     }
 

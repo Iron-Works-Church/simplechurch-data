@@ -8,6 +8,10 @@ data class Table(
   val businessKeys get() = constraints
   .firstOrNull { it.constraintName == "bus_key" }
   ?.columns
+    ?.filterNot { keyColumnName -> columns
+      .single { it.columnName == keyColumnName }
+      .dataType == "datetime"
+    }
 }
 
 data class Column(

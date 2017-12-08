@@ -1,13 +1,14 @@
 package org.ironworkschurch.analytics.to
 
 import java.io.Serializable
+import java.time.LocalDate
 
 
 data class FlatGivingTransaction  (
   val id: Int,
   val uid: Int,
   val amount: Double,
-  val date: String,
+  val date: LocalDate,
   val time: String,
   val method: String,
   val transactionId: String,
@@ -21,8 +22,7 @@ data class FlatGivingTransaction  (
   val oldNote: String,
   val sfoSynced: String,
   val qboSynced: String,
-  val categoryId: Int,
-  val categoryName: String
+  val categoryId: Int
 ) : Serializable
 
 

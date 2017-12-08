@@ -155,7 +155,25 @@ data class FamilyMember (
   val hasPicture: Boolean,
   val male: String,
   val canView: Boolean
-)
+) : HasArray {
+  override val array: Array<Any?> get() =
+    arrayOf(
+      updated,
+      primaryUid,
+      uid,
+      fid,
+      relationship,
+      givesWithFamily,
+      fname,
+      preferredName,
+      lname,
+      dateBirth,
+      dateDied,
+      hasPicture,
+      male,
+      canView
+    )
+}
 
 data class Group (
   val gid: Int,
@@ -227,4 +245,31 @@ data class Login (
   val uid: Int,
   val session_id: String,
   val org_name: String
+)
+
+data class PersonSearchPayload (
+  val success: Boolean,
+  val statusCode: String,
+  val data: List<PersonSearchEntry>
+)
+
+data class PersonSearchEntry (
+  val fname: String,
+  val lname: String,
+  val uid: Int
+)
+
+data class GivingCategoriesPayload (
+  val success: Boolean,
+  val statusCode: String,
+  val data: List<GivingCategoryDetail>
+)
+
+data class GivingCategoryDetail (
+  val id: Int,
+  val name: String,
+  val sortOrder: Int,
+  val active: Boolean,
+  val taxDeductible: Boolean,
+  val onlineGivingEnabled: Boolean
 )

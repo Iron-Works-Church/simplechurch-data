@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter.ISO_DATE
 
 class Aggregator {
   fun aggregate(transactions: List<FlatGivingTransaction>): List<GivingAggregate> {
-    val transactionDates = transactions.map { it.date }.map { LocalDate.parse(it, ISO_DATE) }
+    val transactionDates = transactions.map { it.date }
     val minDate = transactionDates.min()!!
     val maxDate = transactionDates.max()!!
 
@@ -44,8 +44,9 @@ class Aggregator {
 
   private fun windowTotal(endDate: LocalDate, daysToSubtract: Long, transactionsForUser: List<FlatGivingTransaction>): Double {
     val startDate = endDate.minusDays(daysToSubtract)
+    val dateRange = startDate..endDate
     return transactionsForUser
-      .filter { LocalDate.parse(it.date, ISO_DATE) in startDate..endDate }
+      .filter { it.date in dateRange }
       .sumByDouble { it.amount }
   }
 }

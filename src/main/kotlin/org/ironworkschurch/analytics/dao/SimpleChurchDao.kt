@@ -9,7 +9,7 @@ abstract class SimpleChurchDao {
   companion object: KLogging()
   abstract val gson: Gson
 
-  fun getAllPeople(): List<PeoplePerson> {
+  fun getAllPeople(): List<PersonSearchEntry> {
     return parsePeople(getAllPeoplePayload())
   }
 
@@ -27,17 +27,24 @@ abstract class SimpleChurchDao {
     return parseIndividualGiving(getGivingPayload(id))
   }
 
+  fun getGivingCategories(): List<GivingCategoryDetail> {
+    logger.trace { "Retrieving giving categories" }
+    return parseGivingCategories(getGivingCategoriesPayload())
+  }
 
   abstract fun getGivingPayload(id: Int): String
 
-  fun parsePeople(payload: String) = gson.fromJson(payload, PeopleByInitial::class.java)
+  abstract fun getGivingCategoriesPayload(): String
+
+  fun parsePeople(payload: String) = gson.fromJson(payload, PersonSearchPayload::class.java)
     .data
-    .values
-    .flatten()
 
   fun parsePerson(payload: String) = gson.fromJson(payload, PersonPayload::class.java)
     .data
 
   fun parseIndividualGiving(payload: String) = gson.fromJson(payload, PersonGiving::class.java)
+    .data
+
+  fun parseGivingCategories(payload: String) = gson.fromJson(payload, GivingCategoriesPayload::class.java)
     .data
 }

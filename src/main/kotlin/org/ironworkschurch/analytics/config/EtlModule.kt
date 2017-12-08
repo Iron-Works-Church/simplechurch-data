@@ -2,7 +2,7 @@ package org.ironworkschurch.analytics.config
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+import com.mysql.cj.jdbc.MysqlDataSource
 import com.zaxxer.hikari.HikariConfig
 import org.springframework.jdbc.core.JdbcTemplate
 import java.io.File

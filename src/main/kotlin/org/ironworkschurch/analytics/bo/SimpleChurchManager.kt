@@ -1,29 +1,41 @@
 package org.ironworkschurch.analytics.bo
 
+import com.google.common.util.concurrent.ListeningExecutorService
 import mu.KLogging
 import org.ironworkschurch.analytics.dao.SimpleChurchDao
 import org.ironworkschurch.analytics.to.*
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
-class SimpleChurchManager @Inject constructor (private val simpleChurchDao : SimpleChurchDao) {
-  companion object : KLogging()
+class SimpleChurchManager @Inject constructor (private val simpleChurchDao : SimpleChurchDao,
+                                               private val executorService: ListeningExecutorService) {
+
+    companion object : KLogging()
 
   fun getGivingByHousehold(): List<GivingTransaction> {
     val givingUnits = getGivingUnits()
     return getTransactions(givingUnits)
   }
 
-  private fun getTransactions(givingUnits: List<Int>): List<GivingTransaction> {
+  fun getTransactions(givingUnits: List<Int>): List<GivingTransaction> {
     logger.debug { "Retrieving transactions" }
+
     return givingUnits
-      .flatMap { simpleChurchDao.getIndividualGiving(it) }
+      .map { executorService.submit( Callable<List<GivingTransaction>> { simpleChurchDao.getIndividualGiving(it) }) }
+      .flatMap { it.get() as List<*> }
+      .map { it as GivingTransaction }
       .distinctBy { it.id }
   }
 
+  fun getGivingCategories(): List<GivingCategoryDetail> {
+    logger.debug { "Retrieving giving categories" }
+    return simpleChurchDao.getGivingCategories()
+  }
+
   private fun getGivingUnits(): List<Int> {
-    val people = getPersonHeaders()
-    val personDetails = getPersonDetails(people)
+    val personDetails = getAllPersonDetails()
     return getFamilyMembers(personDetails).map {
       when (it.givesWithFamily) {
         true -> it.primaryUid
@@ -32,14 +44,22 @@ class SimpleChurchManager @Inject constructor (private val simpleChurchDao : Sim
     }.distinct()
   }
 
-  fun getFamilyMembers(personDetails: List<PersonDetails>) = personDetails.flatMap { it.family }.distinctBy { it.uid }
-
-  fun getPersonDetails(people: List<PeoplePerson>): List<PersonDetails> {
-    logger.debug { "Retrieving person details" }
-    return people.map { simpleChurchDao.getPersonDetails(it.uid) }
+  fun getAllPersonDetails(): List<PersonDetails> {
+    val people = getPersonHeaders()
+    return getPersonDetails(people)
   }
 
-  fun getPersonHeaders(): List<PeoplePerson> {
+  fun getFamilyMembers(personDetails: List<PersonDetails>) = personDetails.flatMap { it.family }.distinctBy { it.uid }
+
+  private fun getPersonDetails(people: List<PersonSearchEntry>): List<PersonDetails> {
+    logger.debug { "Retrieving person details" }
+
+    return people
+      .map { executorService.submit( Callable<PersonDetails> { simpleChurchDao.getPersonDetails(it.uid) } ) }
+      .map { it.get() as PersonDetails }
+  }
+
+  private fun getPersonHeaders(): List<PersonSearchEntry> {
     logger.debug { "Retrieving people list" }
     val allPeople = simpleChurchDao.getAllPeople()
     logger.trace { "Found ${allPeople.size} results" }
