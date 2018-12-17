@@ -36,8 +36,9 @@ class BaseManager @Inject constructor(private val baseDao: BaseDao,
   fun loadBaseTables(pairs: List<Pair<String, List<Any>>>) {
     val tables = metadataManager.getTables().associateBy { it.tableName }
 
-    pairs.map {
-      executorService.submit { loadData(it.second, tables[it.first]!!) }
+    pairs.map { (tableName, data) ->
+      val table = tables[tableName]!!
+      executorService.submit { loadData(data, table) }
     }.map { it.get() }
   }
 

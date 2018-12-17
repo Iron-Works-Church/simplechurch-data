@@ -39,7 +39,7 @@ class SimpleChurchToMySql @Inject constructor (
 
   private fun run() {
     extractAndLoad()
-    elasticManager.loadRollupsToElastic()
+    //elasticManager.loadRollupsToElastic()
   }
 
   private fun extractAndLoad() {

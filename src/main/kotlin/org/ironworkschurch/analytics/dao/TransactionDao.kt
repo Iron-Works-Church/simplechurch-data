@@ -18,15 +18,15 @@ class TransactionDao @Inject constructor(private val jdbcTemplate: JdbcTemplate)
 
   fun getRollups(lastRollupDate: LocalDate?): List<TransactionRollup> {
     var sql = """SELECT
-                               |  uid,
-                               |  date,
-                               |  amount_last_7,
-                               |  amount_last_30,
-                               |  amount_last_90,
-                               |  amount_last_180,
-                               |  amount_last_365,
-                               |  is_member
-                               |FROM TRANSACTION_ROLLUP"""
+                |  uid,
+                |  date,
+                |  amount_last_7,
+                |  amount_last_30,
+                |  amount_last_90,
+                |  amount_last_180,
+                |  amount_last_365,
+                |  is_member
+                |FROM TRANSACTION_ROLLUP""".trimMargin()
     if (lastRollupDate != null) {
       sql += "\n WHERE date > ?"
     }
