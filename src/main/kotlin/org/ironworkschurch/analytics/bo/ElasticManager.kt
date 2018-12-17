@@ -1,6 +1,7 @@
 package org.ironworkschurch.analytics.bo
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.spark.network.client.TransportClientFactory
 import org.elasticsearch.client.transport.TransportClient
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.transport.TransportAddress
@@ -15,6 +16,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
+import org.bouncycastle.crypto.tls.ConnectionEnd.client
+
+
 
 
 class ElasticManager @Inject constructor (private val transactionDao: TransactionDao,
@@ -22,11 +26,12 @@ class ElasticManager @Inject constructor (private val transactionDao: Transactio
   private val objectMapper = ObjectMapper()
 
   fun loadToElasticSearch(list: List<Any>, index: String, type: String) {
-    val settings = Settings.builder()
-      .put("client.transport.sniff", true)
-      .build()
-    val client = PreBuiltTransportClient(settings)
-      .addTransportAddress(transportAddress)
+    if (list.isEmpty()) {
+      println("No documents to load")
+      return
+    }
+
+    val client = getClient()
 
     val bulk = client.prepareBulk()
     list.map { objectMapper.writeValueAsBytes(it) }
@@ -40,8 +45,10 @@ class ElasticManager @Inject constructor (private val transactionDao: Transactio
   }
 
   private fun getClient(): TransportClient {
+
     val settings = Settings.builder()
-      .put("client.transport.sniff", true)
+      .put("client.transport.ignore_cluster_name", true)
+      //.put("cluster.name", "docker-cluster")
       .build()
     return PreBuiltTransportClient(settings).addTransportAddress(transportAddress)
   }
