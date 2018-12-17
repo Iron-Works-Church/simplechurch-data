@@ -8,15 +8,19 @@ import org.apache.spark.SparkConf
 import org.apache.spark.api.java.JavaSparkContext
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark
 import org.ironworkschurch.analytics.bo.SimpleChurchManager
+import org.ironworkschurch.analytics.config.ApiModule
+import org.ironworkschurch.analytics.config.AppModule
+import org.ironworkschurch.analytics.config.ElasticSearchModule
 import org.ironworkschurch.analytics.config.EtlModule
 import org.ironworkschurch.analytics.to.FlatGivingTransaction
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
 
-class SimpleChurchGivingToElasticSearch (private val simpleChurchManager: SimpleChurchManager) {
+class SimpleChurchGivingToElasticSearch @Inject constructor (private val simpleChurchManager: SimpleChurchManager) {
   fun simpleChurchGivingToElasticSearch() {
     val givingByHousehold = simpleChurchManager.getGivingByHousehold()
     //val givingByHousehold: List<GivingTransaction> = Gson().fromJson(File("transactions.json").reader(), object: TypeToken<List<GivingTransaction>>() {}.type)
@@ -65,7 +69,7 @@ class SimpleChurchGivingToElasticSearch (private val simpleChurchManager: Simple
   companion object {
     @JvmStatic
     fun main(args: Array<String>) {
-      Guice.createInjector(EtlModule())
+      Guice.createInjector(EtlModule(), ApiModule(), AppModule(), ElasticSearchModule())
         .getInstance(SimpleChurchGivingToElasticSearch::class.java)
         .simpleChurchGivingToElasticSearch()
     }
