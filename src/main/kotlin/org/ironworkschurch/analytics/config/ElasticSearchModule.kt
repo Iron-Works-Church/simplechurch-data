@@ -6,6 +6,7 @@ import com.google.inject.Singleton
 import org.elasticsearch.common.transport.TransportAddress
 import java.io.File
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.util.*
 
 class ElasticSearchModule : AbstractModule() {
@@ -19,7 +20,6 @@ class ElasticSearchModule : AbstractModule() {
       Properties().apply { load(it) }
     }
 
-    return TransportAddress(InetAddress.getByName(properties.getProperty("es.nodes")), properties.getProperty("es.port").toInt())
-
+    return TransportAddress(InetAddress.getByName("localhost"),9300)
   }
 }

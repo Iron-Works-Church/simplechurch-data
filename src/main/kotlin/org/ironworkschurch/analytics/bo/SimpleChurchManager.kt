@@ -59,7 +59,7 @@ class SimpleChurchManager @Inject constructor (private val simpleChurchDao : Sim
       .map { it.get() as PersonDetails }
   }
 
-  private fun getPersonHeaders(): List<PersonSearchEntry> {
+  fun getPersonHeaders(): List<PersonSearchEntry> {
     logger.debug { "Retrieving people list" }
     val allPeople = simpleChurchDao.getAllPeople()
     logger.trace { "Found ${allPeople.size} results" }

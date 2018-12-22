@@ -2,6 +2,7 @@ package org.ironworkschurch.analytics.to
 
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 data class FlatGivingTransaction  (
@@ -24,6 +25,27 @@ data class FlatGivingTransaction  (
   val qboSynced: String,
   val categoryId: Int
 ) : Serializable
+
+fun GivingTransaction.flatten() = FlatGivingTransaction(
+  id = id,
+  uid = uid,
+  amount = amount.replace("$", "").replace(",", "").toDouble(),
+  date = LocalDate.parse(date, DateTimeFormatter.ISO_DATE),
+  time = time,
+  method = method,
+  transactionId = transactionId,
+  subscriptionId = subscriptionId,
+  fee = fee,
+  note = note,
+  checkId = checkId,
+  batchId = batchId,
+  pledgeId = pledgeId,
+  checkNumber = checkNumber,
+  oldNote = oldNote,
+  sfoSynced = sfoSynced,
+  qboSynced = qboSynced,
+  categoryId = category.id
+)
 
 
 data class GivingAggregate  (

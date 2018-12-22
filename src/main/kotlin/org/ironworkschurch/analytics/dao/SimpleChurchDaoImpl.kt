@@ -40,7 +40,7 @@ class SimpleChurchDaoImpl @Inject constructor (override val gson: Gson) : Simple
     return payload
   }
 
-  override fun getAllPeoplePayload() = "https://iwc.simplechurchcrm.com:443/api/people/search?lname=Rishty".simpleChurchRestGet()
+  override fun getAllPeoplePayload() = "https://iwc.simplechurchcrm.com:443/api/people/search?lname=%25".simpleChurchRestGet()
 
   override fun getPersonDetailsPayload(id: Int) = "https://iwc.simplechurchcrm.com/api/people/$id".simpleChurchRestGet()
 

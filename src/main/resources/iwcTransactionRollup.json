@@ -2,13 +2,14 @@
 PUT iwc-transaction-rollup
 {
   "settings" : {
-    "number_of_shards" : 1
+    "number_of_shards" : 1,
+    "number_of_replicas" : 0
   },
   "mappings" : {
     "rollup" : {
       "properties" : {
         "uid" : { "type" : "integer" },
-        "date" : { "type" : "date", "format" : "MM/dd/yyyy" },
+        "date" : { "type" : "date", "format" : "yyyy-MM-dd" },
         "amountPast7" : { "type" : "double" },
         "amountPast30" : { "type" : "double" },
         "amountPast90" : { "type" : "double" },

@@ -31,6 +31,31 @@ class BaseManager @Inject constructor(private val baseDao: BaseDao,
       .map { Resources.getResource(it) }
       .map { Resources.toString(it, Charsets.UTF_8) }
       .map { jdbcTemplate.execute(it) }
+
+    if (!metadataManager.tableExists("SUNDAYS")) {
+      val createTableDDL = """CREATE TABLE IF NOT EXISTS SUNDAYS (
+        |  date date not null primary key
+        |);""".trimMargin("|")
+
+      val initialValueSql = "INSERT INTO SUNDAYS VALUES ('2015-01-04');"
+      val recursiveSql = """
+        |INSERT INTO SUNDAYS (
+        |  WITH RECURSIVE cte (date) AS (SELECT MAX(date)
+        |  FROM   SUNDAYS
+        |  UNION ALL
+        |  SELECT Date_add(date, INTERVAL 7 DAY)
+        |  FROM   cte
+        |  WHERE  date < '2030-01-01')
+        |
+        |  SELECT date
+        |  FROM   cte C
+        |  WHERE C.date > (SELECT MAX(date) FROM SUNDAYS)
+        |);""".trimMargin("|")
+
+      jdbcTemplate.execute(createTableDDL)
+      jdbcTemplate.execute(initialValueSql)
+      jdbcTemplate.execute(recursiveSql)
+    }
   }
 
   fun loadBaseTables(pairs: List<Pair<String, List<Any>>>) {

@@ -11,19 +11,23 @@ class BaseDao @Inject constructor(private val jdbcTemplate: JdbcTemplate) {
 
   fun loadData(data: List<Any>, table: Table): Int {
     jdbcTemplate.update("TRUNCATE TABLE ${table.tableName}")
-    val props = data.first()::class
-      .declaredMemberProperties
-      .filterNot { it.name == "array" }
+    val rowsAffected = if (!data.isEmpty()) {
+      val props = data.first()::class
+        .declaredMemberProperties
+        .filterNot { it.name == "array" }
 
-    val sql = """INSERT INTO ${table.tableName} (
-      |  ${props.joinToString(",\n  ") { it.name }}
-      |) VALUES (
-      |  ${table.columns.joinToString(",\n  ") { "?" }}
-      |)""".trimMargin()
+      val sql = """INSERT INTO ${table.tableName} (
+        |  ${props.joinToString(",\n  ") { it.name }}
+        |) VALUES (
+        |  ${table.columns.joinToString(",\n  ") { "?" }}
+        |)""".trimMargin()
 
 
-    val paramArrayList = data.map { record -> props.map { it.call(record) }.toTypedArray() }
-    val rowsAffected = jdbcTemplate.batchUpdate(sql, paramArrayList).sum()
+      val paramArrayList = data.map { record -> props.map { it.call(record) }.toTypedArray() }
+      jdbcTemplate.batchUpdate(sql, paramArrayList).sum()
+    } else {
+      0
+    }
 
     logger.debug { "Inserted $rowsAffected new rows in ${table.tableName}" }
     return rowsAffected

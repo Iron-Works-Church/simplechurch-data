@@ -1,10 +1,13 @@
 package org.ironworkschurch.analytics.dao
 
 import com.google.common.io.Resources
+import org.ironworkschurch.analytics.to.FlatGivingTransaction
+import org.ironworkschurch.analytics.to.GivingTransaction
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 class TransactionDao @Inject constructor(private val jdbcTemplate: JdbcTemplate) {
@@ -50,6 +53,14 @@ class TransactionDao @Inject constructor(private val jdbcTemplate: JdbcTemplate)
     }
 
     return jdbcTemplate.query(sql.trimMargin(), params, rowMapper)
+  }
+
+  fun save(transactionData: List<FlatGivingTransaction>) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  fun getMaxDate(): Date? {
+    return jdbcTemplate.queryForObject("SELECT MAX(date) FROM TRANSACTION_BASE", Date::class.java)
   }
 
   data class TransactionRollup (
