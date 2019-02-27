@@ -39,3 +39,7 @@ services:
     image: docker.elastic.co/kibana/kibana:6.2.1
     ports:
       - 5601:5601
+#  dynamodb:
+#    image: amazon/dynamodb-local
+#    ports:
+#      - 8000:8000
