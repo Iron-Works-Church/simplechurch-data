@@ -14,6 +14,7 @@ import org.ironworkschurch.analytics.config.EtlModule
 import org.ironworkschurch.analytics.to.FlatPersonDetails
 import org.ironworkschurch.analytics.to.PersonDetails
 import org.ironworkschurch.analytics.to.PersonSearchEntry
+import com.amazonaws.services.lambda.runtime.Context
 import javax.inject.Inject
 
 class UpdatePeople @Inject constructor(
@@ -24,11 +25,13 @@ class UpdatePeople @Inject constructor(
 
   companion object {
     val logger = KotlinLogging.logger {}
+    val updatePeople = Guice.createInjector(EtlModule(), ApiModule(), AppModule(), ElasticSearchModule())
+      .getInstance(UpdatePeople::class.java)
 
     @JvmStatic
-    fun main(args: Array<String>) {
-      Guice.createInjector(EtlModule(), ApiModule(), AppModule(), ElasticSearchModule())
-        .getInstance(UpdatePeople::class.java).run()
+    fun handle(input: String, context: Context): String {
+      updatePeople.run()
+      return "OK"
     }
   }
 

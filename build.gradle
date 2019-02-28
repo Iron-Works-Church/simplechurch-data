@@ -45,8 +45,7 @@ dependencies {
     compile "com.google.inject:guice:4.1.0"
 
     compile "org.elasticsearch.client:transport:6.0.0"
-
-    compile 'software.amazon.awssdk:lambda:2.4.16'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.0'
 
     testCompile "org.junit.platform:junit-platform-surefire-provider:1.0.2"
     testCompile "org.junit.platform:junit-platform-launcher:1.0.2"
