@@ -1,7 +1,6 @@
 package org.ironworkschurch.analytics.bo
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.spark.network.client.TransportClientFactory
 import org.elasticsearch.client.transport.TransportClient
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.transport.TransportAddress
@@ -11,14 +10,10 @@ import org.elasticsearch.search.aggregations.AggregationBuilders
 import org.elasticsearch.search.aggregations.metrics.max.Max
 import org.elasticsearch.transport.client.PreBuiltTransportClient
 import org.ironworkschurch.analytics.dao.TransactionDao
-import java.net.InetAddress
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
-import org.bouncycastle.crypto.tls.ConnectionEnd.client
-
-
 
 
 class ElasticManager @Inject constructor (private val transactionDao: TransactionDao,

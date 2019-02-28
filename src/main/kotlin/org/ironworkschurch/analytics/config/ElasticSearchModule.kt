@@ -16,10 +16,13 @@ class ElasticSearchModule : AbstractModule() {
   @Provides
   @Singleton
   fun elasticSearchAddress(): TransportAddress {
-    val properties = File("config/spark.properties").reader().use {
+    val properties = File("config/elasticsearch.properties").reader().use {
       Properties().apply { load(it) }
     }
 
-    return TransportAddress(InetAddress.getByName("localhost"),9300)
+    val hostName = properties.getProperty("es.hostname")
+    val port = properties.getProperty("es.port").toInt()
+
+    return TransportAddress(InetAddress.getByName(hostName),port)
   }
 }

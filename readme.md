@@ -3,7 +3,7 @@
 ## Setup
 
 * Run `docker-compose -f config/docker-compose.yml up -d` to stand up MySQL, ElasticSearch, and Kibana
-* Populate `config.properties`, `simplechurch-login.properties`, and `spark.properties` (see the respective `.sample` files)
+* Populate `config.properties`, `simplechurch-login.properties`, and `elasticsearch.properties` (see the respective `.sample` files)
   with credentials and connection details
 
 ## Financial analysis
