@@ -1,0 +1,5 @@
+* text=auto
+*.kt text eof=lf
+*.yml text eof=lf
+*.sql text eof=lf
+*.bat text eof=crlf
